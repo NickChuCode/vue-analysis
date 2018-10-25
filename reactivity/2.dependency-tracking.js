@@ -19,14 +19,12 @@ window.Dep = class Dep {
     }
 }
 
-let activeUpdate
-
-function autorun (update) {
-    // Implement this!
-    function wrappedUpdate() {
-        activeUpdate = wrappedUpdate
-        update()
-        activeUpdate = null
+class Watcher {
+    constructor () {
+        Dep.target = this
     }
-    wrappedUpdate()
+
+    update(key) {
+        console.log(`${key} has been changed to: ${state[key]}`)
+    }
 }

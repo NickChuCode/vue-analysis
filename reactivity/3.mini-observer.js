@@ -17,37 +17,50 @@ function observe (obj) {
                 const isChanged = internalValue !== newValue
                 if (isChanged) {
                     internalValue = newValue
-                    dep.notify()
+                    dep.notify(key)
                 }
             }
         })
     })
 }
 
-window.Dep = class Dep {
+Dep = class Dep {
     constructor () {
         this.subscribers = new Set()
     }
     depend () {
-        if (activeUpdate) {
-            // register the current active update as a subscriber
-            this.subscribers.add(activeUpdate)
-        }
+        this.subscribers.add(Dep.target)
     }
-    notify () {
+    notify (key) {
         // run all subscriber functions
-        this.subscribers.forEach(subscriber => subscriber())
+        this.subscribers.forEach(subscriber => subscriber.update(key))
     }
 }
 
-let activeUpdate
-
-function autorun (update) {
-    // 这个update中应该是渲染函数，自动运行，每次变量变化的时候，自动执行这个update渲染函数
-    function wrappedUpdate () {
-        activeUpdate = wrappedUpdate
-        update()
-        activeUpdate = null
+class Watcher {
+    constructor () {
+        Dep.target = this
     }
-    wrappedUpdate()
+
+    update(key) {
+        console.log(`${key} has been changed to: ${state[key]}`)
+    }
 }
+
+// 这里模拟vue初始化过程中给变量添加响应式特性的过程
+const state = {
+    count: 0,
+    test: 1
+}
+
+observe(state)
+
+// 添加一个观察者，在new的时候，会自动将其放入Dep.target中，在
+new Watcher()
+
+/* 在这里模拟render的过程，为了触发state下属性的get函数 */
+console.log('render~', state.count);
+console.log('render~', state.test);
+
+state.count = 2
+state.test++
