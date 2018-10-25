@@ -47,12 +47,14 @@ class Watcher {
     }
 }
 
-// 这里模拟vue初始化过程中给变量添加响应式特性的过程
+// 下面模拟vue初始化过程中给变量添加响应式特性的过程
+// 假设state为我们需要具备响应式能力的数据(可以是vue中的props, data, watch, computed)
 const state = {
     count: 0,
     test: 1
 }
 
+// 对state中的数据进行“响应式化”
 observe(state)
 
 // 添加一个观察者，在new的时候，会自动将其放入Dep.target中，在
