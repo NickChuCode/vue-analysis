@@ -61,8 +61,7 @@ observe(state)
 new Watcher()
 
 /* 在这里模拟render的过程，为了触发state下属性的get函数 */
-console.log('render~', state.count);
-console.log('render~', state.test);
+console.log('render~', state.count, state.test);
 
 state.count = 2
 state.test++
